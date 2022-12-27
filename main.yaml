@@ -1,0 +1,230 @@
+- name: Install base software on all
+  hosts: all
+#  strategy: free
+  gather_facts: yes
+  become: yes
+  tasks:
+    - name: update hosts
+      lineinfile:
+        path: "/etc/hosts"
+        regexp: ".*\t{{ hostvars[item]['ansible_host']}}\t{{ hostvars[item]['ansible_hostname']}}"
+        line: "{{ hostvars[item]['ansible_ssh_host'] }}\t{{ hostvars[item]['ansible_hostname']}}\t{{ hostvars[item]['ansible_hostname']}}"
+        state: present
+        backup: yes
+      with_items: "{{ ansible_play_batch }}"
+#    - name: add Adoptium apt key
+#      ansible.builtin.apt_key:
+#        url: https://packages.adoptium.net/artifactory/api/gpg/key/public
+#        state: present
+#    - name: add Adoptium repository
+#      shell: "add-apt-repository https://packages.adoptium.net/artifactory/api/gpg/key/public"
+    - name: remove autoupdate
+      register: updatesys   
+      apt: 
+        name: unattended-upgrades
+        state: absent 
+    - name: Update and install apt packages
+      register: updatesys 
+      apt:
+        name: "{{ packages }}"
+        update_cache: no
+        state: present
+        autoclean: yes
+        autoremove: yes
+        update_cache_retries: 6
+        cache_valid_time: 86000
+      vars:
+        packages:
+#        - temurin-11-jdk
+        - apt-transport-https 
+        - ca-certificates 
+        - curl 
+        - git
+        - gnupg
+        - gnupg-agent 
+        - software-properties-common
+        - unzip
+        - wget
+        - fontconfig 
+        - openjdk-11-jre
+      become: true
+
+- name: Jenkins_installation
+  hosts: masters
+  become: yes
+  tasks:
+    - name: Allow everything and enable UFW
+      community.general.ufw:
+        state: enabled
+        policy: deny
+    - name: ufw rules
+      community.general.ufw:
+        rule: "allow"
+        port: "{{ item }}"
+        proto: "tcp"
+      with_items:
+        - "22"
+        - "80"
+        - "443"
+        - "8080"
+        - "3389"
+    - name: add Jenkins apt key
+      ansible.builtin.apt_key:
+        url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+        state: present
+    - name: Jenkins deb repository
+      ansible.builtin.apt_repository:
+        repo: 'deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/'
+        state: present
+
+    - name: Install Jenkins
+      apt:
+        state: present
+        update_cache: yes
+        autoclean: yes
+        autoremove: yes
+        update_cache_retries: 6
+        cache_valid_time: 86000
+        name:
+          - jenkins=2.375.1
+
+    - name: Stop Jenkins (autostarts after install)
+      systemd:
+        name: jenkins
+        state: stopped
+    - name: delete JENKINS_HOME directory
+      file:
+        state: absent
+        path: /var/lib/jenkins
+    - name: Create directories for Jenkins
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: jenkins
+        group: jenkins
+        recurse: yes
+      with_items:
+        - '/var/cache/jenkins/tmp'
+        - '/var/cache/jenkins/heapdumps'
+        - '/var/lib/jenkins'
+    - name: Create directory for systemd override file
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        group: root
+        recurse: yes
+      with_items:
+        - '/etc/systemd/system/jenkins.service.d'
+    - name: Create limits file
+      copy:
+        dest: "/etc/systemd/system/jenkins.service.d/override.conf"
+        src: "override.conf"
+    - name: start jenkins service
+      systemd:
+        name: jenkins
+        state: restarted
+
+- name: Agent installation
+  hosts: workers
+  become: yes
+  tasks:
+    - name: Allow everything and enable UFW
+      community.general.ufw:
+        state: enabled
+        policy: deny
+    - name: Allow all access to tcp port 22
+      community.general.ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+    - name: remove any installed docker
+      apt:
+        name:
+          - docker 
+          - docker-engine 
+          - docker.io 
+          - containerd 
+          - runc 
+        state: absent
+    - name: add docker-ce apt key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: docker-ce-stable deb repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Install Docker
+      apt:
+        name: 
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+    - name: add docker group
+      group:
+        name: docker
+        state: present
+    - name: add $USER to docker group
+      user: 
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+    - name: do a ssh reset in order to reflect the $USER group changes
+      meta: reset_connection
+    - name: start Docker service
+      systemd:
+        name: docker
+        state: restarted        
+    - name: create Maven directory
+      file: 
+        path: "/opt/tools/maven"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
+    - name: download Maven 3.8.6
+      unarchive:
+        src: https://dlcdn.apache.org/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+        dest: /opt/tools/maven
+        remote_src: yes
+    - name: create Maven latest symlink
+      file: 
+        src: /opt/tools/maven/apache-maven-3.8.6
+        dest: /opt/tools/maven/latest
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        state: link
+    - name: create Gradle directory
+      file: 
+        path: "/opt/tools/gradle"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
+    - name: download Gradle 7.2
+      unarchive:
+        src: https://services.gradle.org/distributions/gradle-7.4.2-bin.zip
+        dest: /opt/tools/gradle
+        remote_src: yes
+    - name: create Gradle latest symlink
+      file: 
+        src: /opt/tools/gradle/gradle-7.4.2
+        dest: /opt/tools/gradle/latest
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        state: link
+    - name: Update PATH with Maven and Gradle
+      lineinfile:
+        path: "/etc/environment"
+        regexp: ".*PATH=.*"
+        line: 'PATH="/opt/tools/gradle/latest/bin:/opt/tools/maven/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"'
+        state: present
+    - name: set final ownership to /opt/tools
+      file: 
+        path: "/opt/tools"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
