@@ -1,5 +1,7 @@
 - name: Install base software on all
   hosts: all
+#  vars_files:
+#    - vars/external_vars.yaml
 #  strategy: free
   gather_facts: yes
   become: yes
@@ -35,7 +37,6 @@
         cache_valid_time: 86000
       vars:
         packages:
-#        - temurin-11-jdk
         - apt-transport-https 
         - ca-certificates 
         - curl 
@@ -107,6 +108,7 @@
         - '/var/cache/jenkins/tmp'
         - '/var/cache/jenkins/heapdumps'
         - '/var/lib/jenkins'
+        - '/var/lib/jenkins/init.groovy.d/'
     - name: Create directory for systemd override file
       file:
         path: "{{ item }}"
@@ -120,10 +122,78 @@
       copy:
         dest: "/etc/systemd/system/jenkins.service.d/override.conf"
         src: "override.conf"
+    - name: configure default users
+      template:
+        src: security.groovy
+        dest: "/var/lib/jenkins/init.groovy.d/basic-security.groovy"
+        owner: jenkins
+        group: jenkins
+        mode: 0775
+      become: true                                                                                         
+      tags: testing  
     - name: start jenkins service
       systemd:
         name: jenkins
+        daemon_reload: yes
         state: restarted
+    - name: Install Plugins on behalf of jenkins user {{jenkins_admin_user}} (Servername = {{ inventory_hostname_short }})
+      jenkins_plugin:
+        name: "{{ item.key }}"
+        url: "http://localhost:8080"
+#        url_username: "{{jenkins_admin_user}}"
+#        url_password: "{{jenkins_admin_pass}}"
+        url_username: "jenkins-user"
+        url_password: "jenkins-pass" 
+#      environment:
+#        http_proxy: "http://{{proxy_user}}:{{proxy_pass}}@<THE_SERVER>:80"
+#        https_proxy: "http://{{proxy_user}}:{{proxy_pass}}@<THE_SERVER>:80"
+      register: plugin_result
+      until: plugin_result is success
+      retries: 10
+      delay: 2
+      with_items: # no version = latest
+        - { key: "git"}
+        - { key: "maven"}
+        - { key: "ant"}
+        - { key: "build-pipeline-plugin"}
+#    - name: start jenkins service
+#      systemd:
+#        name: jenkins
+#        daemon_reload: yes
+#        state: restarted
+    - name: fix a defect to disable setup wizard
+      jenkins_script:
+        script: |
+          import static jenkins.model.Jenkins.instance as jenkins
+          import jenkins.install.InstallState
+          if (!jenkins.installState.isSetupComplete()) {
+            InstallState.INITIAL_SETUP_COMPLETED.initializeState()
+           }
+        user: "jenkins-user"
+        password: "jenkins-pass"
+    - name: Restart Jenkins update plagins
+      systemd:
+        name: jenkins
+        daemon_reload: yes
+        state: restarted
+#    - name: Install Jenkins plugins using a password.
+#      jenkins_plugin:
+#        name: "{{ item }}"
+#        url_username: "{{ jenkins_admin_username }}"
+#        url_password: "{{ jenkins_admin_password }}"
+#        url_username: "jenkins-user"
+#        url_password: "jenkins-pass" 
+#        url: http://localhost:8080
+#      retries: 3
+#      delay: 2
+#      with_items:
+#        - git
+#        - maven
+#        - thinbackup
+#        - build-pipeline-plugin
+#        - trilead-api
+#        - ant    
+
 
 - name: Agent installation
   hosts: workers
