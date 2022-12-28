@@ -30,4 +30,5 @@ RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 
 
 [Ansible Role: Jenkins CI](https://github.com/geerlingguy/ansible-role-jenkins)
+
 ansible-galaxy install geerlingguy.jenkins
