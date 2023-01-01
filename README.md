@@ -3,7 +3,6 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
 
 ### Add deploy terraform to Proxmox 7.1. VM Ubuntu 22.04
 
-<<<<<<< HEAD
 ## 1. Ważne zmiany
    
   ~~Wyłącz tryb uśpienia systemu (Domyślnie włączony podczas standardowej instalacji systemu Ubuntu 22.04)~~
