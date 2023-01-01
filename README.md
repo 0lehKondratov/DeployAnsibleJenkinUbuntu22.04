@@ -3,13 +3,13 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
 
 1. Ważne zmiany
    
-   ~~ a. Wyłącz tryb uśpienia systemu (Domyślnie włączony podczas standardowej instalacji systemu Ubuntu 22.04)~~
+  ~~a. Wyłącz tryb uśpienia systemu (Domyślnie włączony podczas standardowej instalacji systemu Ubuntu 22.04) ~~
    
-   ~~   sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target ~~
+  ~~sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target ~~
  
-   ~~   systemctl status sleep.target ~~
+  ~~systemctl status sleep.target~~
    
-   ~~ b. Zmienne środowiskowe dla wszystkich tajnych parametrów (nazwy użytkowników, hasła) ~~
+  ~~b. Zmienne środowiskowe dla wszystkich tajnych parametrów (nazwy użytkowników, hasła) ~~
     c. Sprawdź działanie, jeśli zainstalowane są starsze wersje
     e. Sprawdź pracę, aby zobaczyć, czy są skonfigurowane alternatywne repozytoria i klucze do nich (stare błędne itp.) i jak go automatycznie wyeliminować
 2. Kroki poprawy
