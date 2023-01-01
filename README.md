@@ -35,8 +35,7 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
   
   с. Automatyczne tworzenie pod-ow dla określonego zadania
 
-[git](]https://updates.jenkins.io/download/plugins/git/latest/git.hpi)  
-[git 4.14.13](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
+[git plugin](]https://updates.jenkins.io/download/plugins/git/latest/git.hpi) [git plugin ver 4.14.13](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
 
 Usage
 You can run the CLI manually in Dockerfile:
