@@ -1,7 +1,6 @@
 # Deploy Ansible Jenkin to Ubuntu 22.04 LTS
 Deploy Jenkin to Ubuntu 22.04.1 LTS
 
-### Add deploy terraform to Proxmox 7.1. VM Ubuntu 22.04
 
 ## 1. Ważne zmiany
    
@@ -74,6 +73,7 @@ export PM_API_TOKEN_SECRET="afcd8f45-acc1-4d0f-bb12-a70b0777ec11"
 ```
 *[Automating Jenkins binary installation](https://www.linkedin.com/pulse/automating-jenkins-binary-installation-mohamed-mostafa/)
 
+### Add deploy terraform to Proxmox 7.1. VM Ubuntu 22.04
 ##Terraform - Proxmox Virtual Machine Deploy
 ```
 pveum role add TerraformProv -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk \
