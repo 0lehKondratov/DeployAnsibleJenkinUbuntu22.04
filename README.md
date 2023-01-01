@@ -1,7 +1,7 @@
 # Deploy Ansible Jenkin to Ubuntu 22.04 LTS
 Deploy Jenkin to Ubuntu 22.04.1 LTS
 
-##1. Ważne zmiany
+## 1. Ważne zmiany
    
   ~~Wyłącz tryb uśpienia systemu (Domyślnie włączony podczas standardowej instalacji systemu Ubuntu 22.04)~~
    
@@ -15,7 +15,7 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
   
   e. Sprawdź pracę, aby zobaczyć, czy są skonfigurowane alternatywne repozytoria i klucze do nich (stare błędne itp.) i jak go automatycznie wyeliminować
 
-##2. Kroki poprawy
+## 2. Kroki poprawy
   
   a. Automatyczne łączenie agentów
   
@@ -27,7 +27,7 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
   
   e. Połączenie z klastrem
 
-##3. Strategiczne zadanie rozwoju na 1.x)))
+## 3. Strategiczne zadanie rozwoju na 1.x)))
 
   a. Przepisz kod za pomocą roli: [Ansible Role: Jenkins CI](https://galaxy.ansible.com/geerlingguy/jenkins/)
   
@@ -35,7 +35,7 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
   
   с. Automatyczne tworzenie pod-ow dla określonego zadania
 
-[git plugin](]https://updates.jenkins.io/download/plugins/git/latest/git.hpi) [git plugin ver 4.14.13](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
+  ### Plugins: [git](https://updates.jenkins.io/download/plugins/git/latest/git.hpi)  [git ver 4.14.13](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
 
 Usage
 You can run the CLI manually in Dockerfile:
