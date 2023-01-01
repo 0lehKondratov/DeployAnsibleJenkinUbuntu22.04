@@ -1,0 +1,14 @@
+- name: Download certificate script
+  ansible.builtin.get_url:
+    url: "{{ ca_script_url }}"
+    dest: /home/ubuntu/ca.sh
+
+- name: Changing perm of installer
+  file: path=/home/ubuntu/ca.sh mode=a+x
+  become: yes
+
+- name: Install certificates using script
+  become: yes
+  ansible.builtin.shell:
+    cmd: ./ca.sh
+    chdir: /home/ubuntu/

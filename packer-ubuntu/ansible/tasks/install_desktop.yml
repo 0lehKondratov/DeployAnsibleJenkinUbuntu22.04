@@ -1,0 +1,28 @@
+- name: Unarchive and download xRDP script
+  ansible.builtin.get_url:
+    url: https://www.c-nergy.be/downloads/xRDP/xrdp-installer-1.4.3.zip
+    dest: /home/ubuntu/xrdp-installer-1.4.3.zip
+
+- name: Unarchive xRDP script
+  become: yes
+  ansible.builtin.unarchive:
+    src: /home/ubuntu/xrdp-installer-1.4.3.zip
+    dest: /home/ubuntu/
+    remote_src: yes
+
+- name: Changing perm of installer
+  file: path=/home/ubuntu/xrdp-installer-1.4.3.sh mode=a+x
+  become: yes
+
+- name: Install xrdp using installer
+  become: yes
+  become_user: ubuntu
+  ansible.builtin.shell:
+    cmd: echo 3 | ./xrdp-installer-1.4.3.sh
+    chdir: /home/ubuntu/
+  register: out
+
+- name: Remove zip
+  ansible.builtin.file:
+    path: /home/ubuntu/xrdp-installer-1.4.3.zip
+    state: absent

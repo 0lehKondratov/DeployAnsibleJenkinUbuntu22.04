@@ -1,0 +1,23 @@
+    - name: Install Docker from role
+      import_role:
+        name: /root/.ansible/roles/geerlingguy.docker
+      vars:
+        docker_install_compose: true
+        docker_users:
+          - ubuntu
+
+    - name: Create systemd docker folder for proxy settings
+      ansible.builtin.file:
+        path: /etc/systemd/system/docker.service.d
+        state: directory
+
+    - name: Create proxy settings for docker 
+      copy: 
+        dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+        content: |
+          [Service]
+          Environment="HTTP_PROXY={{ proxy_url }}"
+          Environment="HTTPS_PROXY={{ proxy_url }}"
+
+
+

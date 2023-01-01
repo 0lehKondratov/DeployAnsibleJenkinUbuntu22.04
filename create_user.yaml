@@ -1,0 +1,10 @@
+- name: creating groups with loop
+  hosts: all
+  become: true
+  tasks:
+  - group:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - doker
+      - jenkins

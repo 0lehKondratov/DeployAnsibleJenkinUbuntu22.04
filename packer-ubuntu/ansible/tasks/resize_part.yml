@@ -1,0 +1,14 @@
+- name: Download resize partition script
+  ansible.builtin.get_url:
+    url: "{{ resize_part_script_url }}"
+    dest: /home/ubuntu/resize-part-ubuntu.sh
+
+- name: Changing perm of script
+  file: path=/home/ubuntu/resize-part-ubuntu.sh mode=a+x
+  become: yes
+
+- name: Resize partition 
+  become: yes
+  ansible.builtin.shell:
+    cmd: ./resize-part-ubuntu.sh
+    chdir: /home/ubuntu/

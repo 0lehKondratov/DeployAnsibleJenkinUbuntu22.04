@@ -1,0 +1,22 @@
+#cloud-config
+autoinstall:
+  version: 1
+  identity:
+    hostname: ubuntu-server
+    password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM30JZ4QrOQ2aOXJ8yk96xpcCof0kxKwuX1kqLG/ygbJ1f8wxED22bTL4F46P0"
+    username: ubuntu
+#  proxy: http://proxy-dmz.intel.com:912
+  package_update: false
+  package_upgrade: false
+  packages:
+    - qemu-guest-agent
+#  ntp:
+#    servers: ["corp.intel.com"]
+  ssh:
+    install-server: true
+  user-data:
+    disable_root: false
+  late-commands:
+    - echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu
+
+  

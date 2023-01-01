@@ -1,0 +1,7 @@
+- name: Add the user 'ubuntu' to grupu sudo
+  ansible.builtin.user:
+    name: ubuntu
+    append: yes
+    groups: sudo
+    state: present
+  become: yes

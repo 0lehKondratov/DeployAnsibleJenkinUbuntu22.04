@@ -1,6 +1,24 @@
 # Deploy Ansible Jenkin to Ubuntu 22.04 LTS
 Deploy Jenkin to Ubuntu 22.04.1 LTS
 
+1. Ważne zmiany
+   ~~ a. Wyłącz tryb uśpienia systemu (Domyślnie włączony podczas standardowej instalacji systemu Ubuntu 22.04)~~
+     ~~   sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target ~~
+     ~~   systemctl status sleep.target ~~
+    b. ~~ Zmienne środowiskowe dla wszystkich tajnych parametrów (nazwy użytkowników, hasła) ~~
+    c. Sprawdź działanie, jeśli zainstalowane są starsze wersje
+    e. Sprawdź pracę, aby zobaczyć, czy są skonfigurowane alternatywne repozytoria i klucze do nich (stare błędne itp.) i jak go automatycznie wyeliminować
+2. Kroki poprawy
+    a. Automatyczne łączenie agentów
+    b. Instalowanie pełnej listy  plugins (tych, które są domyślnie)
+    c. Lista wszystkiego, co należy zainstalować ta wersje -> vars/plugins.yaml, app.yaml etc
+    d. Automatyczne tworzenie i kolejkowanie zadań
+    e. Połączenie z klastrem
+3. Strategiczne zadanie rozwoju na 1.x)))
+    a. Przepisz kod za pomocą roli: Ansible Role: Jenkins CI
+       https://galaxy.ansible.com/geerlingguy/jenkins/
+    b. Automatyczne tworzenie agentów w kontenerach dla określonego zadania
+    с. Automatyczne tworzenie pod-ow dla określonego zadania
 
 https://updates.jenkins.io/download/plugins/git/latest/git.hpi
 https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi
@@ -30,5 +48,21 @@ RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 
 
 [Ansible Role: Jenkins CI](https://github.com/geerlingguy/ansible-role-jenkins)
+<<<<<<< HEAD
 
 ansible-galaxy install geerlingguy.jenkins
+=======
+ansible-galaxy install geerlingguy.jenkins
+
+
+* https://www.linkedin.com/pulse/automating-jenkins-binary-installation-mohamed-mostafa/
+
+##Terraform - Proxmox Virtual Machine Deploy
+``
+pveum role add TerraformProv -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk \
+VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Audit VM.PowerMgmt Datastore.AllocateSpace Datastore.Audit VM.Console"
+pveum user add terraform-prov@pve --password Takietam-1
+pveum aclmod / -user terraform-prov@pve -role TerraformProv
+pveum user token add terraform-prov@pve terraform-token --privsep=0
+```
+>>>>>>> d4b8cc9 (disable sleep)
