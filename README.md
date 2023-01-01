@@ -38,11 +38,9 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
   
   с. Automatyczne tworzenie pod-ow dla określonego zadania
 
-  ### Plugins: [git](https://updates.jenkins.io/download/plugins/git/latest/git.hpi)  [git ver 4.14.13](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
-=======
-    Plugins: [git](https://updates.jenkins.io/download/plugins/git/latest/git.hpi)
-             [git 4.14.3](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
->>>>>>> 5b7fe7a (terra)
+   Plugins: [git](https://updates.jenkins.io/download/plugins/git/latest/git.hpi)
+            [git 4.14.3](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
+
 
 Usage
 You can run the CLI manually in Dockerfile:
@@ -68,26 +66,20 @@ RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
 
 
 [Ansible Role: Jenkins CI](https://github.com/geerlingguy/ansible-role-jenkins)
-<<<<<<< HEAD
-
+```
 ansible-galaxy install geerlingguy.jenkins
-=======
-ansible-galaxy install geerlingguy.jenkins
-
 export PM_USER="terraform-prov@pve"
 export PM_PASS="password"
 export PM_API_TOKEN_ID="terraform-prov@pve!mytoken"
 export PM_API_TOKEN_SECRET="afcd8f45-acc1-4d0f-bb12-a70b0777ec11"
-
-* https://www.linkedin.com/pulse/automating-jenkins-binary-installation-mohamed-mostafa/
+```
+*[Automating Jenkins binary installation](https://www.linkedin.com/pulse/automating-jenkins-binary-installation-mohamed-mostafa/)
 
 ##Terraform - Proxmox Virtual Machine Deploy
-``
+```
 pveum role add TerraformProv -privs "VM.Allocate VM.Clone VM.Config.CDROM VM.Config.CPU VM.Config.Cloudinit VM.Config.Disk \
 VM.Config.HWType VM.Config.Memory VM.Config.Network VM.Config.Options VM.Monitor VM.Audit VM.PowerMgmt Datastore.AllocateSpace Datastore.Audit VM.Console"
 pveum user add terraform-prov@pve --password Takietam-1
 pveum aclmod / -user terraform-prov@pve -role TerraformProv
 pveum user token add terraform-prov@pve terraform-token --privsep=0
 ```
->>>>>>> d4b8cc9 (disable sleep)
-## 
