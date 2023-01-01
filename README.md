@@ -3,6 +3,7 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
 
 ### Add deploy terraform to Proxmox 7.1. VM Ubuntu 22.04
 
+<<<<<<< HEAD
 ## 1. Ważne zmiany
    
   ~~Wyłącz tryb uśpienia systemu (Domyślnie włączony podczas standardowej instalacji systemu Ubuntu 22.04)~~
@@ -38,6 +39,10 @@ Deploy Jenkin to Ubuntu 22.04.1 LTS
   с. Automatyczne tworzenie pod-ow dla określonego zadania
 
   ### Plugins: [git](https://updates.jenkins.io/download/plugins/git/latest/git.hpi)  [git ver 4.14.13](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
+=======
+    Plugins: [git](https://updates.jenkins.io/download/plugins/git/latest/git.hpi)
+             [git 4.14.3](https://updates.jenkins.io/download/plugins/git/4.14.3/git.hpi)
+>>>>>>> 5b7fe7a (terra)
 
 Usage
 You can run the CLI manually in Dockerfile:
@@ -69,6 +74,10 @@ ansible-galaxy install geerlingguy.jenkins
 =======
 ansible-galaxy install geerlingguy.jenkins
 
+export PM_USER="terraform-prov@pve"
+export PM_PASS="password"
+export PM_API_TOKEN_ID="terraform-prov@pve!mytoken"
+export PM_API_TOKEN_SECRET="afcd8f45-acc1-4d0f-bb12-a70b0777ec11"
 
 * https://www.linkedin.com/pulse/automating-jenkins-binary-installation-mohamed-mostafa/
 
@@ -81,3 +90,4 @@ pveum aclmod / -user terraform-prov@pve -role TerraformProv
 pveum user token add terraform-prov@pve terraform-token --privsep=0
 ```
 >>>>>>> d4b8cc9 (disable sleep)
+## 

@@ -1,0 +1,43 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US
+  keyboard:
+    layout: en
+  ssh:
+    install-server: true
+    allow-pw: true
+    disable_root: true
+    ssh_quiet_keygen: true
+    allow_public_ssh_keys: true
+  #identity:
+  #  hostname: ubuntu-server
+  #  username: user-here
+  #  password: SHA512-PASS
+  packages:
+    - qemu-guest-agent
+    - openssh-server
+    - open-vm-tools
+    - cloud-init
+    - whois
+    - zsh
+    - wget
+    - sudo
+  storage:
+    layout:
+      name: direct
+    swap:
+      size: 0
+  user-data:
+    package_upgrade: false
+    timezone: Europe/Warsaw
+    users:
+      - name: jenkins
+        groups: [adm, sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+        passwd: $6$kjBqXESiTv3B5Sd2$bAel9uonKuHamZMrW2MYGEBekYjzSuW5nT31yWEXeasMTA52BVvmT8abiL9BIPm7JbRtXNGQOq3m6I1xTZm92.
+        # - or -
+        # ssh_authorized_keys:
+        #   - your-ssh-key
