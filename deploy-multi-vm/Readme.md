@@ -17,7 +17,7 @@ pub   rsa4096 2020-05-07 [SC]
 uid           [ unknown] HashiCorp Security (HashiCorp Package Signing) <security+packaging@hashicorp.com>
 sub   rsa4096 2020-05-07 [E]
 ```
-# OK
+### OK
 
 ```
 echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
